@@ -1,10 +1,19 @@
+var assert = require('assert')
+var should = require('should')
+var add = require('./index.js')
+describe('add',function(){
+  it('2+3应该输出5',function(){
+    add(2,3).should.equal(5)
+  })
+});
 describe('this', function () {
   it('setTimeout', function (done) {
     var obj = {
       say: function () {
         setTimeout(() => {
           // this 是什么？想想为什么？
-          this.should.equal(null)
+          //箭头函数不会修改this的指向
+          this.should.equal(obj)
           done()
         }, 0)
       }
@@ -15,7 +24,7 @@ describe('this', function () {
   it('global', function () {
     function test() {
       // this 是什么？想想为什么？
-      this.should.equal(null)
+      this.should.equal(global)
     }
     test()
   })
@@ -26,10 +35,10 @@ describe('this', function () {
         say: function () {
           function _say() {
             // this 是什么？想想为什么？
-            this.should.equal(null)
+            this.should.equal(obj)
           }
-          return _say.bind(obj)
-        }()
+          return _say.bind(obj)()
+        }
       }
       obj.say()
     })
@@ -39,9 +48,9 @@ describe('this', function () {
       obj.say = function () {
         function _say() {
           // this 是什么？想想为什么？
-          this.should.equal(null)
+          this.should.equal(obj)
         }
-        return _say.bind(obj)
+        return _say.bind(obj)()
       }()
       obj.say()
     })
